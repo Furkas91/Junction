@@ -2,8 +2,7 @@ from enum import Enum
 from ConvertMap import convert_address
 from typing import List
 from ConvertMap import convert
-
-
+from ConvertMap import paint_map
 #
 # T, F = True, False
 # array = np.asarray(
@@ -29,7 +28,7 @@ class Node:
         if path is None:
             path = []
 
-        self._path: list = path
+        self.path: list = path
         self.coord = coord
         self._visited = visited
         self.weight = weight
@@ -46,8 +45,6 @@ class Node:
 
     def is_visited(self):
         return self._visited
-    def get_path(self):
-        return self._path
 
     # def set_weight(self, weight: int):
     #     self.weight = weight
@@ -56,6 +53,7 @@ class Node:
 def add_bounds(node: Node, stack: list, node_grid, grid: List[List[bool]], width,
                height) -> None:
     """
+    Warning! Coord and cardinal points are mixed up
     :param height: height of grid
     :param width: width of grid
     :param grid: Grid. 0 - blocked, 1 - open
@@ -63,30 +61,39 @@ def add_bounds(node: Node, stack: list, node_grid, grid: List[List[bool]], width
     """
     x = node.coord[0]
     y = node.coord[1]
-    if x + 1 < width and grid[x + 1][y] and not node.is_visited():
+    if x + 1 < height and grid[x + 1][y] and not node.is_visited():
         if not node_grid[x + 1][y]:
-            tmp = Node([x + 1, y], node.get_path().append(Direction.WEST),node.weight + 1 )
+            new_dir = node.path.copy()
+            new_dir.append(Direction.SOUTH)
+            tmp = Node([x + 1, y],new_dir ,node.weight + 1 )
             node_grid[x + 1][y] = tmp
             stack.append(tmp)
         else:
             tmp: Node = node_grid[x + 1][y]
-
             if tmp.weight > node.weight + 1:
                 tmp.weight = node.weight + 1
+                tmp.path = node.path.copy()
+                tmp.path.append(Direction.SOUTH)
 
     if x - 1 >= 0 and grid[x - 1][y] and not node.is_visited():
         if not node_grid[x - 1][y]:
-            tmp = Node([x - 1, y], node.get_path().append(Direction.EAST), node.weight + 1 )
+            new_dir = node.path.copy()
+            new_dir.append(Direction.NORTH)
+            tmp = Node([x - 1, y], new_dir, node.weight + 1)
             node_grid[x - 1][y] = tmp
             stack.append(tmp)
         else:
             tmp: Node = node_grid[x - 1][y]
             if tmp.weight > node.weight + 1:
                 tmp.weight = node.weight + 1
+                tmp.path = node.path.copy()
+                tmp.path.append(Direction.NORTH)
 
-    if y + 1 < height and grid[x][y + 1] and not node.is_visited():
+    if y + 1 < width and grid[x][y + 1] and not node.is_visited():
         if not node_grid[x][y + 1]:
-            tmp = Node([x, y + 1], node.get_path().append(Direction.NORTH), node.weight + 1 )
+            new_dir = node.path.copy()
+            new_dir.append(Direction.WEST)
+            tmp = Node([x, y + 1], new_dir, node.weight + 1 )
             node_grid[x][y + 1] = tmp
             stack.append(tmp)
 
@@ -94,16 +101,22 @@ def add_bounds(node: Node, stack: list, node_grid, grid: List[List[bool]], width
             tmp: Node = node_grid[x][y + 1]
             if tmp.weight > node.weight + 1:
                 tmp.weight = node.weight + 1
+                tmp.path = node.path.copy()
+                tmp.path.append(Direction.WEST)
 
     if y - 1 >= 0 and grid[x][y - 1] and not node.is_visited():
         if not node_grid[x][y - 1]:
-            tmp = Node([x, y - 1], node.get_path().append(Direction.SOUTH), node.weight + 1)
+            new_dir = node.path.copy()
+            new_dir.append(Direction.EAST)
+            tmp = Node([x, y - 1], new_dir, node.weight + 1)
             node_grid[x][y - 1] = tmp
             stack.append(tmp)
         else:
             tmp: Node = node_grid[x][y - 1]
             if tmp.weight > node.weight + 1:
                 tmp.weight = node.weight + 1
+                tmp.path = node.path.copy()
+                tmp.path.append(Direction.EAST)
 
 
 def some_dijkstra(grid: List[List[bool]], pass_coord: [int], height: int, width: int, car_coord: int):
@@ -118,21 +131,23 @@ def some_dijkstra(grid: List[List[bool]], pass_coord: [int], height: int, width:
     y = tmp1[1]
     node_grid[x][y] = origNode
     queue.append(origNode)
+    print(double_pass_coord)
     while queue:
         tmp: Node = queue.pop(0)
         add_bounds(tmp, queue, node_grid, grid, width, height)
         tmp.set_visited()
 
+
         if not double_pass_coord:
             break
 
         for coord in double_pass_coord:
-            if coord == tmp.coord:
+            if coord[0] == tmp.coord[0] and coord[1] == tmp.coord[1]:
                 res_node_list.append(tmp)
                 double_pass_coord.remove(coord)
                 break
 
-    return res_node_list
+    return res_node_list, node_grid
 
 
 if __name__ == '__main__':
@@ -1405,6 +1420,7 @@ if __name__ == '__main__':
     pass_arr = []
     car_pos = []
     s = convert(t["grid"], t['width'])
+    paint_map(s)
     for a in t["customers"].values():
         pass_arr.append(int(a['origin']))
     for a in t["cars"].values():
@@ -1412,20 +1428,29 @@ if __name__ == '__main__':
     print(pass_arr)
     print(car_pos)
     for a in car_pos:
-        some_shit = some_dijkstra(s, pass_arr, t["height"], t["width"], a)
+        some_shit, some_t = some_dijkstra(s, pass_arr, t["height"], t["width"], a)
         for i in some_shit:
             # row = []
             print(i.weight)
-            # print(i)
-            # for a in i:
-            #     if a:
-            #         sl = a.weight
-            #     else:
-            #         sl = -1
-            #     row.append(sl)
-            # for rows in row:
-            #     print(f"{rows:3}",end=" ")
-            # print("\n")
+            print(i.coord)
+            print(i.path)
+            if some_t[i.coord[0]][i.coord[1]]:
+                print(some_t[i.coord[0]][i.coord[1]].coord)
+            else:
+                print(some_t[i.coord[0]][i.coord[1]])
+
+
+        for i in some_t:
+            row = []
+            for a in i:
+                if a:
+                    sl = a.weight
+                else:
+                    sl = -1
+                row.append(sl)
+            for rows in row:
+                print(f"{rows:3}",end=" ")
+            print("\n")
         print("-----------------------------------------------")
 
 # s = [[]]
