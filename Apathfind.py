@@ -14,8 +14,8 @@ class Node():
     def __eq__(self, other):
         return self.position == other.position
 
-
 def astar(maze, start, end):
+
     """Returns a list of tuples as a path from the given start to the given end in the given maze"""
 
     # Create start and end node
@@ -45,6 +45,10 @@ def astar(maze, start, end):
         # Pop current off open list, add to closed list
         open_list.pop(current_index)
         closed_list.append(current_node)
+        #--
+        print(end_node.position, 'BLIYAAAA')
+        print(current_node.position, 'closed')
+        #--
 
         # Found the goal
         if current_node == end_node:
@@ -67,7 +71,8 @@ def astar(maze, start, end):
                 continue
 
             # Make sure walkable terrain
-            if maze[node_position[0]][node_position[1]] != False:
+            if maze[node_position[0]][node_position[1]] != True:
+                print(node_position, 'continue pizda')
                 continue
 
             # Create new node
@@ -75,7 +80,9 @@ def astar(maze, start, end):
 
             # Append
             children.append(new_node)
-
+            #________________________
+            print(new_node.position, 'children')
+            #_________________________
         # Loop through children
         for child in children:
 
@@ -96,6 +103,9 @@ def astar(maze, start, end):
 
             # Add the child to the open list
             open_list.append(child)
+            #--
+            print(child.position, 'open')
+            #--
 
 
 def main():
@@ -1135,16 +1145,16 @@ def main():
                 False,
                 True,
                 True]
-    #start = cm.convert_address(300, 32)
-    #end = cm.convert_address(320, 32)
-    # start = cm.ConvertAdress(862, 32)
-    # end = cm.ConvertAdress(325, 32)
+    start = cm.convert_address(300, 32)
+    end = cm.convert_address(320, 32)
+    # start = cm.convert_adress(862, 32)
+    # end = cm.convert_adress(325, 32)
     # start = cm.ConvertAdress(104, 32)
     # end = cm.ConvertAdress(563, 32)
     # start = cm.ConvertAdress(620, 32)
     # end = cm.ConvertAdress(183, 32)
-    start = (1, 1)
-    end = (0, 12)
+    # start = (1, 1)
+    # end = (0, 12)
     print(start, end)
     new = cm.convert(map, 32)
     cm.paint_map(new)
