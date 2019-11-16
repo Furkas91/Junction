@@ -152,7 +152,6 @@ def main():
 # end = cm.convert_address(320, 32)
 grid = configA['grid']
 width = configA['width']
-
 for customer in configA['customers'].values():
     s = int(customer['origin'])
     e = int(customer['destination'])
@@ -163,16 +162,29 @@ for customer in configA['customers'].values():
     cm.paint_map(new)
     path = astar(new, start, end)
     print(path)
-# start = cm.convert_address(227, 32)
-# end = cm.convert_address(499, 32)
-# start = cm.convert_address(104, 32)
-# end = cm.convert_address(563, 32)
+
+# for customer in configA['cars'].values():
+#     s = int(customer['position'])
+#     e = int(customer['position'])
+#     start = cm.convert_address(s, width)
+#     end = cm.convert_address(e, width)
+#     print(start, end, new[start[0]][start[1]])
+#     new = cm.convert(grid, width)
+#     cm.paint_map(new)
+# start = cm.convert_address(0, 32)
+# end = cm.convert_address(0, 32)
 # start = cm.convert_address(620, 32)
 # end = cm.convert_address(183, 32)
-# start = (23, 31)
-# end = (13, 23)
+# start = (0, 31)
+# end = (0, 23)
+
+
+# start = cm.convert_address(3, 32)
+# end = cm.convert_address(0, 32)
 # print(start, end)
 # new = cm.convert(grid, 32)
+
+
 # cm.paint_map(new)
 # path = astar(new, start, end)
 # print(path)

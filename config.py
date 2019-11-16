@@ -1,4 +1,4 @@
-configB = {'cars': {'0': {'capacity': 5,
+configA = {'cars': {'0': {'capacity': 5,
                           'position': 175,
                           'team_id': 0,
                           'used_capacity': 0},
@@ -1264,7 +1264,7 @@ configB = {'cars': {'0': {'capacity': 5,
            'width': 32
            }
 
-configA = {   'cars': {   '0': {   'capacity': 5,
+configB = {   'cars': {   '0': {   'capacity': 5,
                          'position': 3286,
                          'team_id': 0,
                          'used_capacity': 0},

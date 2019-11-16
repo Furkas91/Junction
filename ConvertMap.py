@@ -35,7 +35,7 @@ def paint_map(map):
 
 
 def convert_address(pos, width):
-    return pos // width, pos - pos // width * width
+    return width -1 - pos // width, pos - pos // width * width
 
 
 if __name__ == '__main__':
