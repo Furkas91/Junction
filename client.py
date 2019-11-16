@@ -18,7 +18,7 @@ API_BASE_URL = SERVER_URL + '/api/v1'
 WORLD_STATUS_URL = API_BASE_URL + '/world'
 TEAM_BASE_URL = ADMIN_URL + '/team'
 ACTIONS_URL = API_BASE_URL + '/actions'
-
+STOP_URL = ADMIN_URL + "/stop"
 
 class CarDirection(enum.Enum):
     north = 0
@@ -84,8 +84,6 @@ def start_game():
 def get_world():
     r = requests.get(WORLD_STATUS_URL)
     world = r.json()
-    pp = pprint.PrettyPrinter(indent=4)
-    pp.pprint(world)
     # If game has ended, world just contains an informative message which is
     # not useful here, just return False in that case
     if 'grid' not in world:
@@ -302,17 +300,17 @@ def main():
     while True:
         logging.info('Starting new iteration')
         world = get_world()
-        print(world["width"])
         if not world:
             # Game must have ended, start it again
             logging.info('Game ended, starting again')
             start_game()
             continue
-
+        pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(world)
         new_car_directions = move_cars(token, world, previous_car_directions)
+        pp.pprint(world)
         previous_car_directions = new_car_directions
         time.sleep(1)
-
 
 if __name__ == '__main__':
     main()
