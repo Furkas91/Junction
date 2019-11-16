@@ -44,6 +44,8 @@ class Node:
     def set_visited(self):
         self._visited = True
 
+    def is_visited(self):
+        return self._visited
     def get_path(self):
         return self._path
 
@@ -61,67 +63,75 @@ def add_bounds(node: Node, stack: list, node_grid, grid: List[List[bool]], width
     """
     x = node.coord[0]
     y = node.coord[1]
-    if x + 1 < width and grid[x + 1][y] != 0:
+    if x + 1 < width and grid[x + 1][y] and not node.is_visited():
         if not node_grid[x + 1][y]:
-            t = Node([x + 1, y], node.get_path().append(Direction.WEST))
-            node_grid[x + 1][y] = t
-            stack.append(t)
+            tmp = Node([x + 1, y], node.get_path().append(Direction.WEST),node.weight + 1 )
+            node_grid[x + 1][y] = tmp
+            stack.append(tmp)
         else:
-            t: Node = node_grid[x + 1][y]
+            tmp: Node = node_grid[x + 1][y]
 
-            if t.weight > width + 1:
-                t.weight = width + 1
+            if tmp.weight > node.weight + 1:
+                tmp.weight = node.weight + 1
 
-    if x - 1 >= 0 and grid[x - 1][y] != 0:
-        if not node_grid[x + 1][y]:
-            t = Node([x - 1, y], node.get_path().append(Direction.EAST))
-            node_grid[x - 1][y] = t
-            stack.append(t)
+    if x - 1 >= 0 and grid[x - 1][y] and not node.is_visited():
+        if not node_grid[x - 1][y]:
+            tmp = Node([x - 1, y], node.get_path().append(Direction.EAST), node.weight + 1 )
+            node_grid[x - 1][y] = tmp
+            stack.append(tmp)
         else:
-            t: Node = node_grid[x - 1][y]
+            tmp: Node = node_grid[x - 1][y]
+            if tmp.weight > node.weight + 1:
+                tmp.weight = node.weight + 1
 
-            if t.weight > width + 1:
-                t.weight = width + 1
-
-    if y + 1 < height and grid[x][y + 1] != 0:
+    if y + 1 < height and grid[x][y + 1] and not node.is_visited():
         if not node_grid[x][y + 1]:
-            t = Node([x, y + 1], node.get_path().append(Direction.NORTH))
-            node_grid[x][y + 1] = t
-            stack.append(t)
+            tmp = Node([x, y + 1], node.get_path().append(Direction.NORTH), node.weight + 1 )
+            node_grid[x][y + 1] = tmp
+            stack.append(tmp)
 
         else:
-            t: Node = node_grid[x][y + 1]
-            if t.weight > width + 1:
-                t.weight = width + 1
+            tmp: Node = node_grid[x][y + 1]
+            if tmp.weight > node.weight + 1:
+                tmp.weight = node.weight + 1
 
-    if y - 1 >= 0 and grid[x][y - 1] != 0:
+    if y - 1 >= 0 and grid[x][y - 1] and not node.is_visited():
         if not node_grid[x][y - 1]:
-            t = Node([x, y - 1], node.get_path().append(Direction.SOUTH))
-            node_grid[x][y - 1] = t
-            stack.append(t)
+            tmp = Node([x, y - 1], node.get_path().append(Direction.SOUTH), node.weight + 1)
+            node_grid[x][y - 1] = tmp
+            stack.append(tmp)
         else:
-            t: Node = node_grid[x][y - 1]
-            if t.weight > width + 1:
-                t.weight = width + 1
+            tmp: Node = node_grid[x][y - 1]
+            if tmp.weight > node.weight + 1:
+                tmp.weight = node.weight + 1
 
 
-def some_dijkstra(grid: List[List[bool]], pass_coord: [int], height: int, width: int, car_coord: int) -> List[Node]:
+def some_dijkstra(grid: List[List[bool]], pass_coord: [int], height: int, width: int, car_coord: int):
     # grid with len
     res_node_list = []
-    node_grid = [[None] * width] * height
+    node_grid = [[None for w in range(width)] for h in range(height)]
     double_pass_coord: [[int, int]] = [convert_address(s, width) for s in pass_coord]
-    stack = list()
-    origNode = Node(convert_address(car_coord, width))
-    stack.append(origNode)
-    while stack:
-        tmp: Node = stack.pop(0)
-        add_bounds(tmp, stack, node_grid, grid, width, height)
+    queue = list()
+    tmp1 = convert_address(car_coord, width)
+    origNode = Node(tmp1)
+    x = tmp1[0]
+    y = tmp1[1]
+    node_grid[x][y] = origNode
+    queue.append(origNode)
+    while queue:
+        tmp: Node = queue.pop(0)
+        add_bounds(tmp, queue, node_grid, grid, width, height)
         tmp.set_visited()
+
+        if not double_pass_coord:
+            break
+
         for coord in double_pass_coord:
             if coord == tmp.coord:
                 res_node_list.append(tmp)
                 double_pass_coord.remove(coord)
                 break
+
     return res_node_list
 
 
@@ -1401,9 +1411,23 @@ if __name__ == '__main__':
         car_pos.append(int(a['position']))
     print(pass_arr)
     print(car_pos)
-    some_shit = some_dijkstra(s, pass_arr, t["height"], t["width"], car_pos[0])
-    for i in some_shit:
-        print(i.coord)
+    for a in car_pos:
+        some_shit = some_dijkstra(s, pass_arr, t["height"], t["width"], a)
+        for i in some_shit:
+            # row = []
+            print(i.weight)
+            # print(i)
+            # for a in i:
+            #     if a:
+            #         sl = a.weight
+            #     else:
+            #         sl = -1
+            #     row.append(sl)
+            # for rows in row:
+            #     print(f"{rows:3}",end=" ")
+            # print("\n")
+        print("-----------------------------------------------")
+
 # s = [[]]
 #
 # for i in range(N):
