@@ -65,7 +65,7 @@ def astar(maze, start, end):
                 continue
 
             # Make sure walkable terrain
-            if maze[node_position[0]][node_position[1]] != 0:
+            if maze[node_position[0]][node_position[1]] != False:
                 continue
 
             # Create new node
@@ -98,16 +98,16 @@ def astar(maze, start, end):
 
 def main():
 
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+    maze = [[False, False, False, False, True, False, False, False, False, False],
+            [False, False, False, False, True, False, False, False, False, False],
+            [False, False, False, False, True, False, False, False, False, False],
+            [False, False, False, False, True, False, False, False, False, False],
+            [False, False, False, False, True, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, True, False, False, False, False, False],
+            [False, False, False, False, True, False, False, False, False, False],
+            [False, False, False, False, True, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False]]
 
     start = (0, 0)
     end = (7, 6)
