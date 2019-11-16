@@ -312,12 +312,15 @@ def main():
         pp = pprint.PrettyPrinter(indent=4)
         # pp.pprint(world)
         new_car_directions = move_cars(token, world, previous_car_directions)
-        if ticks == 10:
-            # world.pop("grid")
+        # if ticks == 10:
+        #     # world.pop("grid")
+        #     pp.pprint(world)
+        #     ticks = 0
+        # else:
+        #     ticks += 1
+        if world["customers"]:
             pp.pprint(world)
-            ticks = 0
-        else:
-            ticks += 1
+            time.sleep(10)
         previous_car_directions = new_car_directions
         # time.sleep(1)
 
