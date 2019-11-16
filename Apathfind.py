@@ -150,18 +150,18 @@ def main():
 
 # start = cm.convert_address(300, 32)
 # end = cm.convert_address(320, 32)
-grid = configA['grid']
-width = configA['width']
-for customer in configA['customers'].values():
-    s = int(customer['origin'])
-    e = int(customer['destination'])
-    start = cm.convert_address(s, width)
-    end = cm.convert_address(e, width)
-    print(start, end)
-    new = cm.convert(grid, width)
-    cm.paint_map(new)
-    path = astar(new, start, end)
-    print(path)
+    grid = configA['grid']
+    width = configA['width']
+    for customer in configA['customers'].values():
+        s = int(customer['origin'])
+        e = int(customer['destination'])
+        start = cm.convert_address(s, width)
+        end = cm.convert_address(e, width)
+        print(start, end)
+        new = cm.convert(grid, width)
+        cm.paint_map(new)
+        path = astar(new, start, end)
+        print(path)
 
 # for customer in configA['cars'].values():
 #     s = int(customer['position'])

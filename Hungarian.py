@@ -5,13 +5,13 @@ import ConvertMap as cm
 import config
 
 def make_matrix(configM):
-    grid = configM('grid')
-    width = configM('width')
-    cars = configM('cars').values()
-    customers = configM('customers').values()
+    grid = configM['grid']
+    width = configM['width']
+    cars = configM['cars'].values()
+    customers = configM['customers'].values()
     new = cm.convert(grid, width)
     cm.paint_map(new)
-    customers = []
+    custom = []
     for customer in configM['customers'].values():
         pr = [customer]
         s = int(customer['origin'])
@@ -22,8 +22,8 @@ def make_matrix(configM):
         path = astar(new, start, end)
         #print(path)
         pr.append(path)
-        customers.append(pr)
-    print(customers)
+        custom.append(pr)
+    print(custom)
 
 def hung():
     n, m = 4, 10
@@ -51,5 +51,5 @@ def hung():
     print(f'total cost: {total}')
 
 if __name__ == '__main__':
-    make_matrix(config.configB)
+    make_matrix(config.configA)
 
