@@ -11,19 +11,30 @@ def convert(bitmap, width):
             f.write('1')
         else:
             f.write('0')
-        if i == width:
+        if i == width and j!=width-1:
             f.write('\n')
             newmap.append([])
             i = 0
             j = j + 1
-    # for ter in newmap:
-    #    print(ter)
+    #for ter in newmap:
+    #   print(ter)
     #   print('\n')
+    newmap.reverse()
     return newmap
 
 
+def paint_map(map):
+    f= open('map.txt', 'w')
+    for row in map:
+        for bit in row:
+            if bit:
+                f.write('1')
+            else:
+                f.write('0')
+        f.write('\n')
+
 def convert_address(pos, width):
-    return [width - pos // width, pos - pos // width * width]
+    return [pos // width, pos - pos // width * width]
 
 
 if __name__ == '__main__':

@@ -67,7 +67,7 @@ def astar(maze, start, end):
                 continue
 
             # Make sure walkable terrain
-            if maze[node_position[0]][node_position[1]] != True:
+            if maze[node_position[0]][node_position[1]] != False:
                 continue
 
             # Create new node
@@ -1135,17 +1135,20 @@ def main():
                 False,
                 True,
                 True]
-    start = cm.ConvertAdress(908, 32)
-    end = cm.ConvertAdress(383, 32)
+    #start = cm.convert_address(300, 32)
+    #end = cm.convert_address(320, 32)
     # start = cm.ConvertAdress(862, 32)
     # end = cm.ConvertAdress(325, 32)
     # start = cm.ConvertAdress(104, 32)
     # end = cm.ConvertAdress(563, 32)
     # start = cm.ConvertAdress(620, 32)
     # end = cm.ConvertAdress(183, 32)
+    start = (1, 1)
+    end = (0, 12)
     print(start, end)
     new = cm.convert(map, 32)
-    path = astar(new, start, [21,32])
+    cm.paint_map(new)
+    path = astar(new, start, end)
     print(path)
 
 
