@@ -1,6 +1,6 @@
 import ConvertMap as cm
 from config import configA
-
+from client import CarDirection
 
 class Node():
     """A node class for A* Pathfinding"""
@@ -64,20 +64,22 @@ def astar(maze, start, end):
                 current = current.parent
             path = path[::-1]
             #print(path[1][0])
-            dir=''
-            direct = [0,0]
-            #print(direct[0])
-            direct[0] = path[1][0]-path[0][0]
-            direct[1] = path[1][1] - path[0][1]
-            if direct == [1, 0]:
-                dir='down'
-            elif direct == [-1, 0]:
-                dir='up'
-            elif direct == [0, 1]:
-                dir='right'
-            elif direct == [0, -1]:
-                dir='left'
-            return  dir, len(path), path  # Return reversed path
+            new_path = []
+            for i in range(len(path) - 1):
+                direct = [0,0]
+                #print(direct[0])
+                direct[0] = path[i + 1][0] - path[i][0]
+                direct[1] = path[i + 1][1] - path[i][1]
+                if direct == [1, 0]:
+                    new_path.append(CarDirection.south)
+                elif direct == [-1, 0]:
+                    new_path.append(CarDirection.north)
+                elif direct == [0, 1]:
+                    new_path.append(CarDirection.east)
+                elif direct == [0, -1]:
+                    new_path.append(CarDirection.west)
+
+            return  dir, len(new_path), new_path  # Return reversed path
 
         # Generate children
         children = []
