@@ -62,7 +62,22 @@ def astar(maze, start, end):
             while current is not None:
                 path.append(current.position)
                 current = current.parent
-            return path[::-1]  # Return reversed path
+            path = path[::-1]
+            #print(path[1][0])
+            dir=''
+            direct = [0,0]
+            #print(direct[0])
+            direct[0] = path[1][0]-path[0][0]
+            direct[1] = path[1][1] - path[0][1]
+            if direct == [1, 0]:
+                dir='down'
+            elif direct == [-1, 0]:
+                dir='up'
+            elif direct == [0, 1]:
+                dir='right'
+            elif direct == [0, -1]:
+                dir='left'
+            return  dir, len(path), path  # Return reversed path
 
         # Generate children
         children = []
