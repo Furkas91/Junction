@@ -147,7 +147,7 @@ def some_dijkstra(grid: List[List[bool]], pass_coord: [int], height: int, width:
                 double_pass_coord.remove(coord)
                 break
 
-    return res_node_list, node_grid
+    return res_node_list
 
 
 if __name__ == '__main__':
@@ -1428,29 +1428,28 @@ if __name__ == '__main__':
     print(pass_arr)
     print(car_pos)
     for a in car_pos:
-        some_shit, some_t = some_dijkstra(s, pass_arr, t["height"], t["width"], a)
-        for i in some_shit:
+        nodes = some_dijkstra(s, pass_arr, t["height"], t["width"], a)
+        for i in nodes:
             # row = []
             print(i.weight)
             print(i.coord)
             print(i.path)
-            if some_t[i.coord[0]][i.coord[1]]:
-                print(some_t[i.coord[0]][i.coord[1]].coord)
-            else:
-                print(some_t[i.coord[0]][i.coord[1]])
+            # if some_t[i.coord[0]][i.coord[1]]:
+            #     print(some_t[i.coord[0]][i.coord[1]].coord)
+            # else:
+            #     print(some_t[i.coord[0]][i.coord[1]])
 
-
-        for i in some_t:
-            row = []
-            for a in i:
-                if a:
-                    sl = a.weight
-                else:
-                    sl = -1
-                row.append(sl)
-            for rows in row:
-                print(f"{rows:3}",end=" ")
-            print("\n")
+        # for i in some_t:
+        #     row = []
+        #     for a in i:
+        #         if a:
+        #             sl = a.weight
+        #         else:
+        #             sl = -1
+        #         row.append(sl)
+        #     for rows in row:
+        #         print(f"{rows:3}",end=" ")
+        #     print("\n")
         print("-----------------------------------------------")
 
 # s = [[]]
