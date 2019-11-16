@@ -59,60 +59,60 @@ def add_bounds(node: Node, stack: list, node_grid, grid: List[List[bool]], width
     :param grid: Grid. 0 - blocked, 1 - open
     :return:
     """
-    x = node.coord[0]
-    y = node.coord[1]
-    if x + 1 < height and grid[x + 1][y] and not node.is_visited():
-        if not node_grid[x + 1][y]:
+    y = node.coord[0]
+    x = node.coord[1]
+    if y + 1 < height and grid[y + 1][x] and not node.is_visited():
+        if not node_grid[y + 1][x]:
             new_dir = node.path.copy()
             new_dir.append(Direction.SOUTH)
-            tmp = Node([x + 1, y],new_dir ,node.weight + 1 )
-            node_grid[x + 1][y] = tmp
+            tmp = Node([y + 1, x],new_dir ,node.weight + 1 )
+            node_grid[y + 1][x] = tmp
             stack.append(tmp)
         else:
-            tmp: Node = node_grid[x + 1][y]
+            tmp: Node = node_grid[y + 1][x]
             if tmp.weight > node.weight + 1:
                 tmp.weight = node.weight + 1
                 tmp.path = node.path.copy()
                 tmp.path.append(Direction.SOUTH)
 
-    if x - 1 >= 0 and grid[x - 1][y] and not node.is_visited():
-        if not node_grid[x - 1][y]:
+    if y - 1 >= 0 and grid[y - 1][x] and not node.is_visited():
+        if not node_grid[y - 1][x]:
             new_dir = node.path.copy()
             new_dir.append(Direction.NORTH)
-            tmp = Node([x - 1, y], new_dir, node.weight + 1)
-            node_grid[x - 1][y] = tmp
+            tmp = Node([y - 1, x], new_dir, node.weight + 1)
+            node_grid[y - 1][x] = tmp
             stack.append(tmp)
         else:
-            tmp: Node = node_grid[x - 1][y]
+            tmp: Node = node_grid[y - 1][x]
             if tmp.weight > node.weight + 1:
                 tmp.weight = node.weight + 1
                 tmp.path = node.path.copy()
                 tmp.path.append(Direction.NORTH)
 
-    if y + 1 < width and grid[x][y + 1] and not node.is_visited():
-        if not node_grid[x][y + 1]:
+    if x + 1 < width and grid[y][x + 1] and not node.is_visited():
+        if not node_grid[y][x + 1]:
             new_dir = node.path.copy()
             new_dir.append(Direction.WEST)
-            tmp = Node([x, y + 1], new_dir, node.weight + 1 )
-            node_grid[x][y + 1] = tmp
+            tmp = Node([y, x + 1], new_dir, node.weight + 1 )
+            node_grid[y][x + 1] = tmp
             stack.append(tmp)
 
         else:
-            tmp: Node = node_grid[x][y + 1]
+            tmp: Node = node_grid[y][x + 1]
             if tmp.weight > node.weight + 1:
                 tmp.weight = node.weight + 1
                 tmp.path = node.path.copy()
                 tmp.path.append(Direction.WEST)
 
-    if y - 1 >= 0 and grid[x][y - 1] and not node.is_visited():
-        if not node_grid[x][y - 1]:
+    if x - 1 >= 0 and grid[y][x - 1] and not node.is_visited():
+        if not node_grid[y][x - 1]:
             new_dir = node.path.copy()
             new_dir.append(Direction.EAST)
-            tmp = Node([x, y - 1], new_dir, node.weight + 1)
-            node_grid[x][y - 1] = tmp
+            tmp = Node([y, x - 1], new_dir, node.weight + 1)
+            node_grid[y][x - 1] = tmp
             stack.append(tmp)
         else:
-            tmp: Node = node_grid[x][y - 1]
+            tmp: Node = node_grid[y][x - 1]
             if tmp.weight > node.weight + 1:
                 tmp.weight = node.weight + 1
                 tmp.path = node.path.copy()
