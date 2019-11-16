@@ -20,6 +20,7 @@ TEAM_BASE_URL = ADMIN_URL + '/team'
 ACTIONS_URL = API_BASE_URL + '/actions'
 STOP_URL = ADMIN_URL + "/stop"
 
+
 class CarDirection(enum.Enum):
     north = 0
     east = 1
@@ -297,20 +298,29 @@ def main():
     world = get_world()
 
     previous_car_directions = {}
-    while True:
+    t = True
+    ticks = 0
+    while t:
         logging.info('Starting new iteration')
         world = get_world()
         if not world:
             # Game must have ended, start it again
             logging.info('Game ended, starting again')
-            start_game()
-            continue
+            t = False
+            send_put_request(STOP_URL)
+
         pp = pprint.PrettyPrinter(indent=4)
-        pp.pprint(world)
+        # pp.pprint(world)
         new_car_directions = move_cars(token, world, previous_car_directions)
-        pp.pprint(world)
+        if ticks == 10:
+            # world.pop("grid")
+            pp.pprint(world)
+            ticks = 0
+        else:
+            ticks += 1
         previous_car_directions = new_car_directions
-        time.sleep(1)
+        # time.sleep(1)
+
 
 if __name__ == '__main__':
     main()
