@@ -5,7 +5,7 @@ import json
 import logging
 import random
 import time
-
+import pprint
 import names
 import requests
 
@@ -84,7 +84,8 @@ def start_game():
 def get_world():
     r = requests.get(WORLD_STATUS_URL)
     world = r.json()
-
+    pp = pprint.PrettyPrinter(indent=4)
+    pp.pprint(world)
     # If game has ended, world just contains an informative message which is
     # not useful here, just return False in that case
     if 'grid' not in world:
@@ -301,6 +302,7 @@ def main():
     while True:
         logging.info('Starting new iteration')
         world = get_world()
+        print(world["width"])
         if not world:
             # Game must have ended, start it again
             logging.info('Game ended, starting again')
