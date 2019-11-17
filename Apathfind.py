@@ -79,7 +79,7 @@ def astar(maze, start, end):
                 elif direct == [0, -1]:
                     new_path.append(CarDirection.west)
 
-            return  dir, len(new_path), new_path  # Return reversed path
+            return len(new_path), new_path  # Return reversed path
 
         # Generate children
         children = []
