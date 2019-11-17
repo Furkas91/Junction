@@ -8,15 +8,18 @@ import time
 import pprint
 import names
 import requests
-
+# import Hungarian as hu
 import lxml.html as lh
+from ConvertMap import paint_map, convert
 
 SERVER_URL = 'http://127.0.0.1:8080'
+
 ADMIN_URL = SERVER_URL + '/admin'
 GAME_START_URL = ADMIN_URL + '/start'
 API_BASE_URL = SERVER_URL + '/api/v1'
 WORLD_STATUS_URL = API_BASE_URL + '/world'
 TEAM_BASE_URL = ADMIN_URL + '/team'
+TEAM_URL = SERVER_URL + "/Richard-and-Lieselotte" + "/api/v1/world"
 ACTIONS_URL = API_BASE_URL + '/actions'
 STOP_URL = ADMIN_URL + "/stop"
 
@@ -93,6 +96,16 @@ def get_world():
     logging.debug('Updated world data: %s', world)
     return world
 
+def get_my_world():
+    r = requests.get(TEAM_URL, headers= {'Authorization': "c7f4282b"})
+    world = r.json()
+    # If game has ended, world just contains an informative message which is
+    # not useful here, just return False in that case
+    if 'grid' not in world:
+        return False
+
+    logging.debug('Updated world data: %s', world)
+    return world
 
 def index_to_coordinates(index, width):
     x = index % width
@@ -226,7 +239,7 @@ def get_cars(world):
 
 
 def move_car(car_id, direction, token):
-    logging.debug('Moving car ID %d to the %s', car_id, direction.name)
+    logging.info('Moving car ID %d to the %s', car_id, direction.name)
     request_content = json.dumps({
         'type': 'move',
         'action': {
@@ -293,16 +306,17 @@ def move_cars(token, world, previous_car_directions=None):
 
 def main():
     setup()
-    token = add_team_and_get_token()
+    token = "437c4f47"
     start_game()
     world = get_world()
 
     previous_car_directions = {}
     t = True
-    ticks = 0
+    ticks = 10
     while t:
         logging.info('Starting new iteration')
         world = get_world()
+        # my_world = get_my_world()
         if not world:
             # Game must have ended, start it again
             logging.info('Game ended, starting again')
@@ -310,19 +324,30 @@ def main():
             send_put_request(STOP_URL)
 
         pp = pprint.PrettyPrinter(indent=4)
-        # pp.pprint(world)
-        new_car_directions = move_cars(token, world, previous_car_directions)
-        # if ticks == 10:
-        #     # world.pop("grid")
-        #     pp.pprint(world)
-        #     ticks = 0
-        # else:
-        #     ticks += 1
-        if world["customers"]:
-            pp.pprint(world)
-            time.sleep(10)
-        previous_car_directions = new_car_directions
-        # time.sleep(1)
+        pp.pprint(world)
+        # new_car_directions = move_cars(token, world, previous_car_directions)
+        result = hu.make_matrix(world)
+        print(result)
+        custom = result[0]
+        cars = result[1]
+        count = result[2]
+        orders = hu.hung(custom, cars, count)
+        if orders != None:
+            hu.manipulate_cars(orders,token)
+        paint_map(convert(world["grid"],world["width"]))
+        print(orders)
+        #move_car(0, CarDirection.north, token)
+        if ticks == 10:
+                if world["customers"]:
+                    pp.pprint(world["customers"])
+                    pp.pprint(world["cars"])
+                    time.sleep(10)
+                ticks = 0
+        else:
+            ticks += 1
+
+        # previous_car_directions = new_car_directions
+        time.sleep(1)
 
 
 if __name__ == '__main__':

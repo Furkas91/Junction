@@ -3,7 +3,7 @@ from ConvertMap import convert_address
 from typing import List
 from ConvertMap import convert
 from ConvertMap import paint_map
-from config import configA
+from config import configC
 #
 # T, F = True, False
 # array = np.asarray(
@@ -125,8 +125,14 @@ def some_dijkstra(grid: List[List[bool]], pass_coord: [int], height: int, width:
     res_node_list = []
     node_grid = [[None for w in range(width)] for h in range(height)]
     double_pass_coord: [[int, int]] = [convert_address(s, width) for s in pass_coord]
+    double_pass_coord_copy = double_pass_coord.copy()
+    #print("Pass coord")
+    #print(double_pass_coord)
+    #print("Input coord")
     queue = list()
     tmp1 = convert_address(car_coord, width)
+    #print(tmp1)
+    #print("----------------")
     origNode = Node(tmp1)
     x = tmp1[0]
     y = tmp1[1]
@@ -147,12 +153,22 @@ def some_dijkstra(grid: List[List[bool]], pass_coord: [int], height: int, width:
                 res_node_list.append(tmp)
                 double_pass_coord.remove(coord)
                 break
+    ordered_res_node_list = []
+    for coord in double_pass_coord_copy:
+        flag = False
+        for node in res_node_list:
+            if node.coord[0] == coord[0] and node.coord[1] == coord[1]:
+                ordered_res_node_list.append(node)
+                flag = True
+                break
+        if not flag:
+            ordered_res_node_list.append(None)
 
-    return res_node_list
+    return ordered_res_node_list
 
 
 if __name__ == '__main__':
-    t = configA
+    t = configC
 
     pass_arr = []
     car_pos = []
@@ -162,32 +178,31 @@ if __name__ == '__main__':
         pass_arr.append(int(a['origin']))
     for a in t["cars"].values():
         car_pos.append(int(a['position']))
-    print(pass_arr)
-    print(car_pos)
     for a in car_pos:
-        nodes = some_dijkstra(s, pass_arr, t["height"], t["width"], a)
+        nodes, some_t = some_dijkstra(s, pass_arr, t["height"], t["width"], a)
         for i in nodes:
             # row = []
-            print(i.weight)
-            print(i.coord)
-            print(i.path)
-            # if some_t[i.coord[0]][i.coord[1]]:
-            #     print(some_t[i.coord[0]][i.coord[1]].coord)
-            # else:
-            #     print(some_t[i.coord[0]][i.coord[1]])
+            #print(i.weight)
+            #print(i.coord)
+            #print(i.path)
+            if some_t[i.coord[0]][i.coord[1]]:
+                print(some_t[i.coord[0]][i.coord[1]].coord)
+            else:
+                print(some_t[i.coord[0]][i.coord[1]])
 
-        # for i in some_t:
-        #     row = []
-        #     for a in i:
-        #         if a:
-        #             sl = a.weight
-        #         else:
-        #             sl = -1
-        #         row.append(sl)
-        #     for rows in row:
-        #         print(f"{rows:3}",end=" ")
-        #     print("\n")
+        for i in some_t:
+            row = []
+            for a in i:
+                if a:
+                    sl = a.weight
+                else:
+                    sl = -1
+                row.append(sl)
+            for rows in row:
+                print(f"{rows:3}",end=" ")
+            print("\n")
         print("-----------------------------------------------")
+        break
 
 # s = [[]]
 #
