@@ -1,5 +1,5 @@
 import ConvertMap as cm
-from config import configA
+from config import configC
 from client import CarDirection
 
 class Node():
@@ -127,8 +127,10 @@ def astar(maze, start, end):
             child.f = child.g + child.h
 
             # Child is already in the open list
+            print(child.position, "BLYAAAAAAAAAAAAAAAAAAAA")
             for open_node in open_list:
                 if child == open_node and child.g > open_node.g:
+                    print(child.position, "pizdariki")
                     continue
 
             # Add the child to the open list
@@ -152,9 +154,9 @@ def main():
 
 # start = cm.convert_address(300, 32)
 # end = cm.convert_address(320, 32)
-    grid = configA['grid']
-    width = configA['width']
-    for customer in configA['customers'].values():
+    grid = configC['grid']
+    width = configC['width']
+    for customer in configC['customers'].values():
         s = int(customer['origin'])
         e = int(customer['destination'])
         start = cm.convert_address(s, width)
@@ -165,7 +167,7 @@ def main():
         path = astar(new, start, end)
         print(path)
 
-# for customer in configA['cars'].values():
+# for customer in configC['cars'].values():
 #     s = int(customer['position'])
 #     e = int(customer['position'])
 #     start = cm.convert_address(s, width)

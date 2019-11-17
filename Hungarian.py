@@ -7,9 +7,9 @@ import config
 from client import move_car, add_team_and_get_token
 
 
-def manipulate_cars(orders):
+def manipulate_cars(orders, token):
     for order in orders:
-        move_car(order[0], order[1])
+        move_car(order[0], order[1], token)
 
 
 
@@ -33,22 +33,30 @@ def make_matrix(configM):
     custom_id = 0
     car_id = 0
     hren = []
+    nahuy = []
+
     for customer in configM['customers'].values():
         s = int(customer['origin'])
         e = int(customer['destination'])
         start = cm.convert_address(s, width)
-        end = cm.convert_address(e, width)
+        end = [cm.convert_address(e, width)]
         if customer['car_id'] != -1:
             hren.append((customer['car_id'], end))
         else:
             pr = [custom_id, end]
             # print(start, end)
-            path = astar(new, start, end)
+            #path = astar(new, start, end)
+            nodes = some_dijkstra(new, [ e ], height, width, s)
+            #print(nodes)
             # print(path)
-            pr.append(path)
-            custom.append(pr)
+            if nodes[0] != None:
+                pr.append(nodes[0])
+                custom.append(pr)
+            else:
+                pr.append(None)
+                custom.append(pr)
             custom_id = custom_id + 1
-    # print(customers)
+    #print(custom)
 
     cars = [[[],[],[],[]]]
     # print(len(cars[0][2]))
@@ -75,6 +83,7 @@ def make_matrix(configM):
 
             cars.append(( keys[car_id], nodes, [], newnodes))
 
+
             car_id += 1
     # print(cars)
     cars.pop(0)
@@ -97,16 +106,21 @@ def hung(custom, cars, count):
     m = Munkres()
 
     counter = 0
-
+    #print(cars)
+    #print('csccs')
     customers_map = []
     gopa = 0
     for car in cars:
         serial_num = 0
         row = []
         for pas in custom:
-            #print(car)
-            row.append(car[1][pas[0]].weight + pas[2][0])
-            customers_map.append((0, pas[0]))
+            if(pas != None) and (car[1][pas[0]] != None) and (pas[2] !=None):
+                #print(car[1])
+                row.append(car[1][pas[0]].weight + pas[2].weight)
+                customers_map.append((0, pas[0]))
+            else:
+                customers_map.append((0, pas[0]))
+                row.append(DISALLOWED)
         for i in range(count - gopa - len(car[3])):
             row.append(DISALLOWED)
         for t in car[3]:
@@ -123,10 +137,30 @@ def hung(custom, cars, count):
 
 
     m.pad_matrix(matrix, 0)
+    print_matrix(matrix)
+
+    nah = []
+    flag=0
+    cnt=0
+    for i in matrix:
+        flag=0
+        for j in i:
+            if j != DISALLOWED:
+                flag=1
+        if flag == 0:
+            print(cnt)
+            nah.append(cnt)
+        cnt+=1
+    for n in nah:
+        matrix.pop(n)
+        print('deleted', n)
+    #print('\n', nah[1])
+    print_matrix(matrix)
+
 
     indexes = m.compute(matrix)
+    #print('csccs')
 
-    print_matrix(matrix, msg='Lowest cost through this matrix')
     total = 0
     i = 0
     values = []
@@ -137,25 +171,26 @@ def hung(custom, cars, count):
     for row, column in indexes:
         values.append(matrix[row][column])
         total += values[i]
-        print(f'({row}, {column}) -> {values[i]}')
+        #print(f'({row}, {column}) -> {values[i]}')
         if customers_map[column][0] == 0:
             kot.append((cars[row][0], cars[row][1][column].path[0]))
         else:
             kot.append((cars[row][0], cars[row][3][customers_map[column][2]].path[0]))
         i += 1
-        if cars[row][1][column].weight == 1:
-            cars[row][2].append(custom[column][1][2])
-    print(f'total cost: {total}')
+        #if cars[row][1][column].weight == 1:
+        #    cars[row][2].append(custom[column][1][2])
+    # print(f'total cost: {total}')
 
     return kot
 
 
 if __name__ == '__main__':
     #token = add_team_and_get_token()
-    result = make_matrix(config.configA)
+    result = make_matrix(config.configB)
     custom = result[0]
     cars = result[1]
     count = result[2]
     orders = hung(custom, cars, count)
-    manipulate_cars(orders)
-    #manipulate_cars(orders, cars)
+    print(orders)
+    # manipulate_cars(orders)
+    # manipulate_cars(orders, cars)
